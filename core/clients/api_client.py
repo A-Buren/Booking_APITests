@@ -19,12 +19,12 @@ class APIClient:
     def __init__(self):
         environment_str = os.getenv('ENVIRONMENT')
         try:
-            environment = Environment(environment_str)
+            environment = Environment[environment_str]
         except KeyError:
             raise ValueError(f"Unsupported environment value: {environment_str}")
 
         self.base_url = self.get_base_url(environment)
-        self.session = requests.Session
+        self.session = requests.Session()
         self.session.headers = {
             'Content-Type': 'application/json'
         }
