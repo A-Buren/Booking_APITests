@@ -68,7 +68,7 @@ class APIClient:
             response.raise_for_status()
         with allure.step('Checking status code'):
             assert response.status_code == 200, f"Expected status code 200 but got {response.status_code}"
-        token = response.json().get("token")
+        token = response.json().get("token") #получить токен также можно через response.json()['token']
         with allure.step('Updating header with authorization'):
             self.session.headers.update({"Authorization": f"Bearer {token}"})
 
@@ -91,14 +91,18 @@ class APIClient:
             assert response.status_code == 201, f"Expected status code 201 but got {response.status_code}"
             return response.status_code == 201
 
-    def create_booking(self, booking_data):
+    def create_booking(self, booking_dates):
         with allure.step('Creating booking'):
             url = f"{self.base_url}{Endpoints.BOOKING_ENDPOINT.value}"
-            response = self.session.post(url, json=booking_data)
+            response = self.session.post(url, json=booking_dates, headers={"Content-Type": "application/json",
+            "Accept": "application/json"})
             response.raise_for_status()
         with allure.step('Checking status code'):
             assert response.status_code == 200, f"Expected status 200 but got {response.status_code}"
-        return response.json()
+        return {
+            "status_code": response.status_code,
+            "data": response.json()
+        }
 
     def booking_ids(self, params=None):
         with allure.step('Getting object with booking'):
