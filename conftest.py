@@ -3,7 +3,7 @@ import pytest
 from datetime import datetime, timedelta
 from faker import Faker
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def api_client():
     client = APIClient()
     client.auth()
