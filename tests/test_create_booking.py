@@ -1,4 +1,6 @@
 import allure
+import pytest
+import requests
 from pydantic import ValidationError
 from core.models.booking import BookingResponse
 
@@ -59,3 +61,15 @@ def test_create_booking_with_custom_data(api_client):
         BookingResponse(**response)
     except ValidationError as e:
         raise ValidationError(f"Response validation failed: {e}")
+
+
+@allure.feature('Test Creating Booking')
+@allure.story('Negative: creating booking without data')
+def test_create_booking_without_data(api_client):
+    payload = None
+    with allure.step("Попытка создания бронирования без данных"):
+        with pytest.raises(requests.exceptions.HTTPError) as error_info:
+            api_client.create_booking(booking_dates=payload)
+
+    with allure.step('Проверка кода ошибки'):
+        assert error_info.value.response.status_code == 500, ("Ожидался статус-код 500 при отсутствии данных")
