@@ -99,10 +99,7 @@ class APIClient:
             response.raise_for_status()
         with allure.step('Checking status code'):
             assert response.status_code == 200, f"Expected status 200 but got {response.status_code}"
-        return {
-            "status_code": response.status_code,
-            "data": response.json()
-        }
+        return response.json()
 
     def booking_ids(self, params=None):
         with allure.step('Getting object with booking'):
